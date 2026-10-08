@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phishing Email Analyser — Local, Browser-Based Risk Triage</title>
+  <meta name="description" content="Free educational tool: paste a suspicious email and get an explainable 0–100 phishing risk score. Analysis runs entirely in your browser — your email is never uploaded.">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:title" content="Phishing Email Analyser">
+  <meta property="og:description" content="Paste a suspicious email and get an explainable 0–100 risk score. 100% local analysis.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2322d3ee' d='M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#analyser">Skip to the analyser</a>
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top">
+        <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z"/>
+          <path d="m8.5 12.2 2.3 2.3 4.7-4.9" class="brand-tick"/>
+        </svg>
+        <span>Phishing Email <strong>Analyser</strong></span>
+      </a>
+      <span class="privacy-pill" title="Analysis happens inside your browser">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9V7a5 5 0 0 0-10 0v2H5v12h14V9h-2zm-8 0V7a3 3 0 0 1 6 0v2H9z"/></svg>
+        100% local analysis
+      </span>
+    </div>
+  </header>
+
+  <main class="wrap" id="top">
+
+    <!-- ========== HERO ========== -->
+    <section class="hero">
+      <p class="eyebrow">Educational triage tool</p>
+      <h1>Check a suspicious email for <span class="grad">phishing warning signs</span></h1>
+      <p class="lede">Paste the email, click <strong>Analyse Email</strong>, and get an explainable risk score out of 100 — with every warning sign and every point laid out.</p>
+      <div class="privacy-note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z"/></svg>
+        <p><strong>Your email never leaves this device.</strong> All analysis runs locally inside your browser. Nothing is uploaded to any server, AI provider, analytics service or API, and no tracking of any kind is used.</p>
+      </div>
+    </section>
+
+    <!-- ========== INPUT PANEL ========== -->
+    <section class="panel" id="analyser">
+      <div class="panel-head">
+        <h2>1. Paste the suspicious email</h2>
+        <p class="hint">Paste the message text. If you can copy the full headers too (<em>From</em>, <em>Reply-To</em>, <em>Authentication-Results</em>), extra sender checks become available. Tip: <kbd>Ctrl</kbd> + <kbd>Enter</kbd> runs the analysis.</p>
+      </div>
+
+      <label class="sr-only" for="emailInput">Email content</label>
+      <textarea id="emailInput" rows="12" spellcheck="false" placeholder="Paste the email text here… (headers optional)
+
+From: sender@example.com
+Subject: …"></textarea>
+
+      <p id="inputError" class="error" hidden>Please paste an email first — or load one of the demo examples below.</p>
+
+      <div class="toolbar">
+        <div class="examples">
+          <label for="exampleSelect">Demo emails:</label>
+          <select id="exampleSelect" aria-label="Choose a demo email"></select>
+          <button type="button" id="loadExample" class="btn btn-ghost">Load example</button>
+        </div>
+        <div class="actions">
+          <button type="button" id="clearBtn" class="btn btn-ghost">Clear</button>
+          <button type="button" id="analyseBtn" class="btn btn-primary">Analyse Email</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========== RESULTS (filled in by app.js) ========== -->
+    <section class="results" id="results" hidden aria-live="polite">
+
+      <div class="panel result-summary-card">
+        <div class="gauge-area">
+          <div class="gauge risk-low" id="gauge">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="gauge-track" cx="60" cy="60" r="52"></circle>
+              <circle class="gauge-progress" id="gaugeProgress" cx="60" cy="60" r="52"></circle>
+            </svg>
+            <div class="gauge-value"><span id="scoreValue">0</span><span class="gauge-denom">/100</span></div>
+          </div>
+          <p class="gauge-caption">Phishing risk score</p>
+        </div>
+        <div class="summary-text">
+          <span class="risk-badge risk-low" id="riskBadge">Low Risk</span>
+          <h2 id="resultHeadline">Result</h2>
+          <p id="scoreSummary"></p>
+          <p class="fine-print">This is an automated triage of warning signs, not a verdict. It cannot confirm whether an email is safe or malicious.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head row">
+          <h2>Warning signs found</h2>
+          <p class="score-math" id="scoreMath"></p>
+        </div>
+        <ul class="findings" id="findingList"></ul>
+        <p class="empty-note" id="noFindings" hidden>No warning signs from the checklist were detected. This does <strong>not</strong> prove the email is safe — it only means these particular patterns were not present.</p>
+      </div>
+
+      <div class="panel">
+        <h2>What you should do next</h2>
+        <ul class="recs" id="recList"></ul>
+      </div>
+
+      <div class="disclaimer">
+        <strong>Important:</strong> this tool is an educational triage aid. It highlights patterns commonly used in phishing and social engineering; it can <strong>never</strong> definitively determine whether an email is malicious or harmless. Do not click links or open attachments in a suspicious email just to test them. Verify important messages independently using the organisation's official website, app, or contact details you already trust.
+      </div>
+
+    </section>
+
+    <!-- ========== HOW IT WORKS ========== -->
+    <section class="section" id="how">
+      <h2>How the scoring works</h2>
+      <div class="how-grid">
+        <article class="how-card">
+          <span class="step">1</span>
+          <h3>Paste</h3>
+          <p>You paste the email — and its headers if you have them. The text stays on your device.</p>
+        </article>
+        <article class="how-card">
+          <span class="step">2</span>
+          <h3>Rule check</h3>
+          <p>20 transparent rules look for known warning signs. Every rule is worth a fixed number of points.</p>
+        </article>
+        <article class="how-card">
+          <span class="step">3</span>
+          <h3>Explainable result</h3>
+          <p>Points add up to a score capped at 100. You see each rule that fired, its points and the text that triggered it.</p>
+        </article>
+      </div>
+      <div class="scale">
+        <div class="scale-bar" aria-hidden="true"><span class="seg low"></span><span class="seg med"></span><span class="seg high"></span></div>
+        <div class="scale-labels"><span>0–29 · Low Risk</span><span>30–69 · Suspicious</span><span>70–100 · High Risk</span></div>
+      </div>
+    </section>
+
+
+    <!-- ========== WHAT WE CHECK ========== -->
+    <section class="section" id="checks">
+      <h2>What the analyser checks</h2>
+      <p class="section-lede">Every rule below contributes a fixed number of points. If a rule fires, you will see it — and its points — in your results.</p>
+      <div class="check-grid" id="checkList"></div>
+    </section>
+
+    <!-- ========== SAFETY ========== -->
+    <section class="section safety" id="safety">
+      <h2>Stay safe while triaging</h2>
+      <ul>
+        <li>Never click links or open attachments in a suspicious email <em>in order to test them</em>.</li>
+        <li>Verify important messages independently — open the organisation's official website or app yourself, or call a number you already have. Do not use links or numbers taken from the email.</li>
+        <li>Never share passwords, MFA/verification codes or one-time passwords with anyone, no matter who asks.</li>
+        <li>If the email relates to work or study, report it to your IT or security team using your usual internal process.</li>
+        <li>This tool is for learning and triage only — it can never guarantee that an email is safe or malicious.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p><strong>Phishing Email Analyser</strong> — an educational cybersecurity project.</p>
+      <p>Privacy: analysis happens entirely in your browser. No email content is transmitted, stored or shared. No cookies, trackers, analytics, accounts or external services.</p>
+    </div>
+  </footer>
+
+  <script src="examples.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
