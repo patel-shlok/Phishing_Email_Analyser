@@ -63,7 +63,7 @@ meaningful.
 Open `examples.js` and copy one of the existing blocks in the
 `PHISHING_EXAMPLES` list. Give it a new `id`, `name` and `content`.
 
-## Limitations — please read
+## Limitations
 
 This is an **educational triage tool**. It highlights common warning
 signs; it can never definitively determine whether an email is malicious
