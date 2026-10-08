@@ -29,16 +29,6 @@ No installation and no tools are required.
 2. Double-click `index.html`.
 3. It opens in your web browser; that's the whole app running locally.
 
-## How to publish it (free)
-
-Because it is only static files, any free static host works:
-
-- **GitHub Pages**: create a public repository, upload these files, then
-  enable GitHub Pages in the repository settings.
-- **Netlify Drop**: drag this folder onto netlify.com/drop.
-
-Neither option needs a paid plan or a server.
-
 ## How the scoring works
 
 `app.js` contains a list called `RULES`. Every rule has a fixed point
