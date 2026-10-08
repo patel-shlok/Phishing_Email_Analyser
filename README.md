@@ -27,7 +27,7 @@ No installation and no tools are required.
 
 1. Open the folder that contains these files.
 2. Double-click `index.html`.
-3. It opens in your web browser — that's the whole app running locally.
+3. It opens in your web browser; that's the whole app running locally.
 
 ## How to publish it (free)
 
@@ -67,7 +67,7 @@ Open `examples.js` and copy one of the existing blocks in the
 
 This is an **educational triage tool**. It highlights common warning
 signs; it can never definitively determine whether an email is malicious
-or safe. It performs pattern matching only — it does not sandbox
+or safe. It performs pattern matching only it does not sandbox
 attachments, visit links, or contact any service.
 
 - Never click links or open attachments in a suspicious email just to
