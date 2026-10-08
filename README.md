@@ -15,8 +15,8 @@ email text is never uploaded anywhere.
 
 | File | Purpose |
 |---|---|
-| `index.html` | The page itself — layout and all wording |
-| `style.css` | The visual design — colours, spacing, mobile layout |
+| `index.html` | The page itself: layout and all wording |
+| `style.css` | The visual design: colours, spacing, mobile layout |
 | `app.js` | The analysis engine (the rules and scoring) plus the interface code |
 | `examples.js` | Six fictional demo emails shown in the "Demo emails" dropdown |
 | `README.md` | This guide |
